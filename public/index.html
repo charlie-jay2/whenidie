@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Toggle Shortcut Visibility</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      text-align: center;
+    }
+    button {
+      font-size: 20px;
+      margin: 20px;
+      padding: 15px 30px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Toggle Shortcut Visibility</h1>
+  <button id="showBtn">Show Shortcut</button>
+  <button id="hideBtn">Hide Shortcut</button>
+  <p id="statusMsg"></p>
+
+  <script>
+    const showBtn = document.getElementById('showBtn');
+    const hideBtn = document.getElementById('hideBtn');
+    const statusMsg = document.getElementById('statusMsg');
+
+    showBtn.onclick = async () => {
+      try {
+        const res = await fetch('/show', { method: 'POST' });
+        const data = await res.json();
+        statusMsg.textContent = data.visible ? 'Shortcut is now VISIBLE.' : 'Failed to show shortcut.';
+      } catch (e) {
+        statusMsg.textContent = 'Error: ' + e.message;
+      }
+    };
+
+    hideBtn.onclick = async () => {
+      try {
+        const res = await fetch('/hide', { method: 'POST' });
+        const data = await res.json();
+        statusMsg.textContent = data.visible ? 'Failed to hide shortcut.' : 'Shortcut is now HIDDEN.';
+      } catch (e) {
+        statusMsg.textContent = 'Error: ' + e.message;
+      }
+    };
+
+    // Optional: Show current status on page load
+    async function loadStatus() {
+      try {
+        const res = await fetch('/status');
+        const data = await res.json();
+        statusMsg.textContent = data.visible ? 'Shortcut is currently VISIBLE.' : 'Shortcut is currently HIDDEN.';
+      } catch (e) {
+        statusMsg.textContent = 'Error loading status.';
+      }
+    }
+
+    loadStatus();
+  </script>
+</body>
+</html>
